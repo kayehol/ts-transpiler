@@ -23,6 +23,15 @@ type Token =
   TokenValueNode<TokenType.Literal> |
   TokenValueNode<TokenType.String>
 
+const tokenStringMap: Array<{
+  key: string,
+  value: Token
+}> = [
+    { key: '\n', value: { type: TokenType.LineBreak } },
+    { key: 'new', value: { type: TokenType.VariableDeclaration } },
+    { key: '=', value: { type: TokenType.AssignmentOperator } },
+    { key: 'print', value: { type: TokenType.Log } },
+  ];
 
 export function tokeniser(input: string): Token[] {
   let currentPosition = 0;
@@ -124,21 +133,9 @@ export function tokeniser(input: string): Token[] {
   return out;
 }
 
-const tokenStringMap: Array<{
-  key: string,
-  value: Token
-}> = [
-    { key: '\n', value: { type: TokenType.LineBreak } },
-    { key: 'new', value: { type: TokenType.VariableDeclaration } },
-    { key: '=', value: { type: TokenType.AssignmentOperator } },
-    { key: 'print', value: { type: TokenType.Log } },
-  ];
 
 console.log(tokeniser(`
 new hello = 'world'
 print hello
 `));
-
-
-
 
