@@ -1,16 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tokeniser = tokeniser;
-var TokenType;
-(function (TokenType) {
-    TokenType["VariableDeclaration"] = "VariableDeclaration";
-    TokenType["AssignmentOperator"] = "AssignmentOperator";
-    TokenType["Literal"] = "Literal";
-    TokenType["String"] = "String";
-    TokenType["LineBreak"] = "LineBreak";
-    TokenType["Log"] = "Log";
-})(TokenType || (TokenType = {}));
-function tokeniser(input) {
+exports.tokenise = tokenise;
+const types_1 = require("./types");
+const tokenStringMap = [
+    { key: '\n', value: { type: types_1.TokenType.LineBreak } },
+    { key: 'new', value: { type: types_1.TokenType.VariableDeclaration } },
+    { key: '=', value: { type: types_1.TokenType.AssignmentOperator } },
+    { key: 'print', value: { type: types_1.TokenType.Log } },
+];
+function tokenise(input) {
     let currentPosition = 0;
     function lookaheadString(str) {
         const parts = str.split('');
@@ -64,7 +62,7 @@ function tokeniser(input) {
             currentPosition++;
             const bucket = lookahead(/[^']/);
             out.push({
-                type: TokenType.String,
+                type: types_1.TokenType.String,
                 value: bucket.join('')
             });
             currentPosition += bucket.length + 1;
@@ -73,7 +71,7 @@ function tokeniser(input) {
         if (literalRegex.test(currentToken)) {
             const bucket = lookahead(literalRegex, literalRegexNext);
             out.push({
-                type: TokenType.Literal,
+                type: types_1.TokenType.Literal,
                 value: bucket.join('')
             });
             currentPosition += bucket.length;
@@ -83,13 +81,3 @@ function tokeniser(input) {
     }
     return out;
 }
-const tokenStringMap = [
-    { key: '\n', value: { type: TokenType.LineBreak } },
-    { key: 'new', value: { type: TokenType.VariableDeclaration } },
-    { key: '=', value: { type: TokenType.AssignmentOperator } },
-    { key: 'print', value: { type: TokenType.Log } },
-];
-console.log(tokeniser(`
-new hello = 'world'
-print hello
-`));
